@@ -6,41 +6,63 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f5f5f5;
-      color: #333;
+      background-color: #f7f7f7;
+      padding: 20px;
     }
     h1 {
       text-align: center;
     }
-    .video-grid {
+    .video-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
-      padding: 20px;
+      padding: 10px;
     }
-    iframe {
-      border-radius: 10px;
+    .video-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .video-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .video-card a {
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>🔥 NRL TikTok Aggregator 🔥</h1>
-  <div class="video-grid">
-  <!-- Replace with working public videos -->
- <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@nrl/video/7512254042655952133" data-video-id="7512254042655952133" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@nrl" href="https://www.tiktok.com/@nrl?refer=embed">@nrl</a> <p>Rugby League Las Vegas 2026 tickets on sale now! 🥁 Round up your mates &#38; grab your tickets for a festival of footy in the sports and entertainment capital of the world. Rugby League Las Vegas. Let’s Go!</p> <a target="_blank" title="♬ original sound - NRL" href="https://www.tiktok.com/music/original-sound-7512254066632248120?refer=embed">♬ original sound - NRL</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
-    
-    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@nrl/video/7512254042655952133" data-video-id="7512254042655952133" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@nrl" href="https://www.tiktok.com/@nrl?refer=embed">@nrl</a> <p>Rugby League Las Vegas 2026 tickets on sale now! 🥁 Round up your mates &#38; grab your tickets for a festival of footy in the sports and entertainment capital of the world. Rugby League Las Vegas. Let’s Go!</p> <a target="_blank" title="♬ original sound - NRL" href="https://www.tiktok.com/music/original-sound-7512254066632248120?refer=embed">♬ original sound - NRL</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+  <h1>🔥 NRL TikTok Aggregator (Auto-updated)</h1>
+  <div class="video-list" id="tiktok-feed"></div>
 
-  <blockquote class="tiktok-embed" cite="https://https://www.tiktok.com/@nrl/video/7512429831703858488?is_from_webapp=1&sender_device=pc&web_id=7495549601769588231" style="max-width: 100%;min-width: 320px;">
-    <section>Loading...</section>
-  </blockquote>
+  <script>
+    const feedUrl = "https://rssbridge.appbridge.io/?action=display&bridge=TikTok&context=Hashtag&h=NRL&sort=top&media_type=all&format=Json";
 
-  <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@nrl/video/7512410920077806904?is_from_webapp=1&sender_device=pc&web_id=7495549601769588231" style="max-width: 100%;min-width: 320px;">
-    <section>Loading...</section>
-  </blockquote>
-</div>
-
-  <script async src="https://www.tiktok.com/embed.js"></script>
+    fetch(feedUrl)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('tiktok-feed');
+        data.items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'video-card';
+          card.innerHTML = `
+            <a href="${item.uri}" target="_blank">
+              <img src="${item.enclosures[0]}" alt="TikTok thumbnail">
+              ${item.title}
+            </a>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById('tiktok-feed').innerText = "Failed to load TikToks.";
+        console.error(err);
+      });
+  </script>
 </body>
 </html>
