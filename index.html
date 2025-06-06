@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NRL TikTok Aggregator</title>
+  <title>NRL Content Hub</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
+      background-color: #f4f4f4;
+      margin: 0;
       padding: 20px;
     }
     h1 {
@@ -29,77 +30,60 @@
     .tabs button.active {
       background-color: #0056b3;
     }
-    .video-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 10px;
+    .tab-content {
+      display: none;
+      max-width: 800px;
+      margin: 0 auto;
     }
-    .video-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .video-card img {
-      width: 100%;
-      border-radius: 8px;
-    }
-    .video-card a {
-      text-decoration: none;
-      font-weight: bold;
+    .tab-content.active {
       display: block;
-      margin-top: 5px;
+    }
+    .embed {
+      margin-bottom: 20px;
+    }
+    iframe {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>🔥 NRL TikTok Aggregator</h1>
+  <h1>🏉 NRL Content Hub</h1>
   <div class="tabs">
-    <button class="tab active" data-hashtag="NRL">#NRL</button>
-    <button class="tab" data-hashtag="StateOfOrigin">#StateOfOrigin</button>
-    <button class="tab" data-hashtag="NRLHighlights">#NRLHighlights</button>
+    <button class="tab-button active" data-tab="instagram">Instagram</button>
+    <button class="tab-button" data-tab="youtube">YouTube Highlights</button>
   </div>
-  <div class="video-list" id="tiktok-feed">Loading...</div>
+
+  <div id="instagram" class="tab-content active">
+    <div class="embed">
+      <iframe src="https://www.instagram.com/p/C7k1i2dSBZP/embed" height="500" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="embed">
+      <iframe src="https://www.instagram.com/p/C7f3Fh7r7z4/embed" height="500" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div id="youtube" class="tab-content">
+    <div class="embed">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/nHk5N1O2Vr8" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="embed">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/j_jZq_XgGdo" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
 
   <script>
-    const feedContainer = document.getElementById('tiktok-feed');
+    const buttons = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
 
-    const getFeedUrl = (tag) =>
-      `https://rssbridge.appbridge.io/?action=display&bridge=TikTok&context=Hashtag&h=${tag}&sort=top&media_type=all&format=Json`;
-
-    const loadTikToks = (tag) => {
-      feedContainer.innerHTML = "Loading...";
-      fetch(getFeedUrl(tag))
-        .then(res => res.json())
-        .then(data => {
-          feedContainer.innerHTML = "";
-          data.items.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'video-card';
-            card.innerHTML = `
-              <a href="${item.uri}" target="_blank">
-                <img src="${item.enclosures[0]}" alt="TikTok thumbnail">
-                ${item.title}
-              </a>
-            `;
-            feedContainer.appendChild(card);
-          });
-        })
-        .catch(err => {
-          feedContainer.innerHTML = "Failed to load TikToks.";
-          console.error(err);
-        });
-    };
-
-    // Initial load
-    loadTikToks("NRL");
-
-    document.querySelectorAll('.tab').forEach(button => {
+    buttons.forEach(button => {
       button.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+        buttons.forEach(btn => btn.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+
         button.classList.add('active');
-        loadTikToks(button.dataset.hashtag);
+        document.getElementById(button.dataset.tab).classList.add('active');
       });
     });
   </script>
